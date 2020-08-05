@@ -1,0 +1,40 @@
+{% load static %}
+{% load blog_tags %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src = "{% static "js/jquery.js" %}"></script>
+</head>
+<body>
+
+<a href="{% url 'blog:project_list' %}"><h1>My Blog</h1></a>
+<p>This is my blog. I've written {% total_projects %} project so far.</p>
+<div id="header">
+    <a href="https://karaganda.itstep.org/">Made in Django-country:</a>
+</div>
+<div class="content">
+    {%block content %}
+
+    {%endblock%}
+</div>
+
+<div id="footer">
+    {% if projects %}
+        {% include "pagination.html" with page=projects %}
+    {% endif %}
+    {#        {% include "pagination.html" with page=page_obj %}#}
+
+    <div class="container">
+        <p>ItStep Karaganda 2020</p>
+        <p>tel:+223-322-2237</p>
+        <p>email: itstep.karaganda0@gmail.com</p>
+        <p>Copy right all reserved</p>
+    </div>
+
+</div>
+
+</body>
+</html>

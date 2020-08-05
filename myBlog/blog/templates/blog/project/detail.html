@@ -1,0 +1,80 @@
+{% extends "blog/base.html" %}
+{% load static %}
+{% load blog_tags %}
+
+{% block title %}
+  {{ product.name }}
+{% endblock %}
+
+{% block content %}
+    <div class="detail">
+        <div class="product-detail">
+            <div class="container">
+                <h3><b>{{project.title}}</b></h3>
+                <h3>
+                    <a href="https://github.com/Askar-Itstep/{{project.title}}">Go to GitHub!</a>
+                </h3>
+                <a href="{% url 'blog:post_share' project.id %}" class="button">Рекомендовать другу</a>
+            </div>
+
+        <div class="flat_stack">
+            <img src="{% if project.image %}
+            {{ project.image.url }}
+            {% else %}
+            {% static 'img/no_image.png' %}
+            {% endif %}" alt="NoImg">
+
+            <div class="stack">
+{#                {{ project.description|linebreaks }}#}
+                {{ project.description|markdown }}
+                <h2><b>Similar project</b></h2>
+                {% for project in similar_project %}
+                    <p>
+                        <a href="{{ project.get_absolute_url }}">{{ project.title }}</a>
+                    </p>
+                {% empty %}
+                    There are no similar project yet.
+                {% endfor %}
+        {#-------------Блок работы с комментариями к проекту------------------#}
+        {#--------------------и поделиться ссылкой на проект---------------#}
+                {% with comments.count as total_comments %}
+                    <h2>
+                        {#                Фильтр шаблона pluralize используется для отображения суффикса множественного числа #}
+                        {{ total_comments }} comment{{ total_comments|pluralize }}
+                    </h2>
+                {% endwith %}
+                <div class="comments">
+                    {% for comment in comments %}
+                        <p class="info">
+                            Comment {{ forloop.counter }} by {{ comment.name }}
+                            {{ comment.created }}
+                        </p>
+                        <b><i>{{ comment.body|linebreaks }}</i></b>
+                    {% empty %}<p>There are no comments yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+            {% if new_comment %}<h2>Your comment has been added.</h2>
+            {% else %}
+
+                <div class="new_comment">
+                    <h2>Add a new comment</h2>
+{#                    <form action="{% url 'blog:post_share' project.id%}" method="post">#}
+                    <form action="{% url 'blog:project_detail' project.id project.slug%}" method="post">
+                        {{ comment_form.as_p}}
+                        {% csrf_token %}
+                        <p><input type="submit" value="Add comment"></p>
+                    </form>
+                </div>
+            {% endif %}
+
+
+
+        </div>
+        <div id="absaz"></div>
+    </div>
+
+{% endblock %}
+
+<script src="{% static 'js/jquery.js' %}"></script>
